@@ -13,8 +13,8 @@ module.exports = async function(deployer, network, accounts) {
   await deployer.deploy(TokenFarm, dappToken.address, daiToken.address); //deploy tokenFarm
   const tokenFarm = await TokenFarm.deployed();
 
-  await dappToken.transfer(tokenFarm.address, '1000000000000000000000000'); //transfer all 1 mn dapptokens to account[0] == tokenFarm address
+  await dappToken.transfer(tokenFarm.address, '1000000000000000000000000'); //transfer all 1mn dapptokens to account[0] == tokenFarm address
 
-  await daiToken.transfer(accounts[1], '1000000000000000000000000')  //transfer all 1mn daiTokens to account[1] == investor
+  await daiToken.transfer(accounts[1], '100000000000000000000')  //transfer all 100 daiTokens to account[1] == investor
 
 };
