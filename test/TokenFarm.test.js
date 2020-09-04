@@ -4,14 +4,14 @@ const TokenFarm = artifacts.require("TokenFarm");
 const DappToken = artifacts.require("DappToken");
 const DaiToken = artifacts.require("DaiToken");
 
-//const web3 = new Web3();
-
 require('chai').use(require('chai-as-promised')).should();
 
+//function to convert eather to wei
 function toWei(number) {
     return web3.utils.toWei(number, 'ether');
 }
 
+//
 contract('TokenFarm', ([owner, investor]) => {
 
     let daiToken, dappToken, tokenFarm;
@@ -58,10 +58,40 @@ contract('TokenFarm', ([owner, investor]) => {
             let balance = await dappToken.balanceOf(tokenFarm.address);
             assert.equal(balance.toString(), toWei('1000000'));
         });
-        it('rewards investors for staking mDai token', async() => {
-            let results = await daiToken.balanceOf(investor);
-            assert.equal(results, toWei('100'), "investor balance correct before staking");
+        // it('rewards investors for staking mDai token', async() => {
+        //     let results = await daiToken.balanceOf(investor);
+        //     assert.equal(results, toWei('100'), "investor balance correct before staking");
             
+        // });
+    });
+
+    describe('Farming Tokens', async() => {
+        let balance;
+
+        it('rewards investors for staking mDAI tokens', async() => {
+            //checking investor mDAI balance before staking
+            balance = await daiToken.balanceOf(investor);
+            assert.equal(balance.toString(), toWei('100'));
+            
+            //adding tokenfarm in approve list and staking investor's mDAI
+            await daiToken.approve(tokenFarm.address, toWei('100'), {from: investor});
+            await tokenFarm.stakeTokens(toWei('100'), {from: investor});
+
+            //checking investor mDAI balance after staking
+            balance = await daiToken.balanceOf(investor);
+            assert.equal(balance.toString(), toWei('0'));
+
+            //checking tokenFarm mDAI balance after staking
+            balance = await daiToken.balanceOf(tokenFarm.address);
+            assert.equal(balance.toString(), toWei('100'));
+
+            //checking staking balance of investor in tokenFarm 
+            balance = await tokenFarm.stakingBalance(investor);
+            assert.equal(balance.toString(), toWei('100'));
+
+            //checking current staking is true
+            let isStaking = await tokenFarm.isStaking(investor);
+            assert.equal(isStaking.toString(), 'true', "investor staking is not correct");
         });
     });
 
