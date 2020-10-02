@@ -1,9 +1,9 @@
-const TokenFarm = artifacts.require("TokenFarm");
+const Vault = artifacts.require("Vault");
 
 module.exports = async function(callback) {
 
-    let tokenFarm = await TokenFarm.deployed();
-    await tokenFarm.issueTokens();  //@audit issue tokens has an argument
-    console.log('tokens issued');
+    let vault = await Vault.deployed();
+    await vault.issueTokens();  
+    console.log("tokens issued");
     callback();
 };
