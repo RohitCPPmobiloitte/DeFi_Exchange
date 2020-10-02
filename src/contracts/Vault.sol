@@ -1,13 +1,13 @@
 pragma solidity >=0.5.0;
 
-import './DappToken.sol';
 import './DaiToken.sol';
+import './WBTCToken.sol';
 
-contract TokenFarm {
+contract Vault {
 
-    string public name = "DApp Token Farm";
-    DappToken public dappToken;
+    string public name = "Vault";
     DaiToken public daiToken;
+    WBTCToken public wbtcToken;
 
     //array of all the user addresses that have staked their token
     address[] public stakers;
@@ -16,17 +16,17 @@ contract TokenFarm {
     mapping (address => bool) public hasStaked;
     mapping (address => bool) public isStaking;
 
-    constructor (DappToken _dappToken, DaiToken _daiToken) public {
-        dappToken = _dappToken;
+    constructor (DaiToken _daiToken, WBTCToken _wbtcToken) public {
         daiToken = _daiToken;
+        wbtcToken = _wbtcToken;
     }
 
     //stake tokens (deposit) and issues the same token to the caller of the function
     function stakeTokens(uint _amount) public { 
         require(_amount > 0, "Amount cannot be zero");
 
-        //transfer DAI token to this tokenFarm contract to stake
-        daiToken.transferFrom(msg.sender, address(this), _amount);
+        //transfer WBTC token to this tokenFarm contract to stake
+        wbtcToken.transferFrom(msg.sender, address(this), _amount);
         //update stakingBalance
         stakingBalance[msg.sender] += _amount;
         //adding user to add in the staking array
@@ -50,10 +50,10 @@ contract TokenFarm {
         uint updatedBalance = balance - _amount;
         //updating staking balance
         stakingBalance[msg.sender] -= updatedBalance;
-        //transferring dappTokens from user to tokenFarm    
-        dappToken.transferFrom(msg.sender, address(this), _amount);
-        //transferring mDAI tokens from tokenFarm to user
-        daiToken.transferFrom(address(this), msg.sender, _amount);
+        //transferring DaiTokens from user to tokenFarm    
+        daiToken.transferFrom(msg.sender, address(this), _amount);
+        //transferring mWBTC tokens from tokenFarm to user
+        wbtcToken.transferFrom(address(this), msg.sender, _amount);
         //if updated token balance of user is zero then make isStaking false 
         if(updatedBalance <= 0){
             isStaking[msg.sender] = false;
@@ -64,7 +64,7 @@ contract TokenFarm {
     function issueTokens(address recipient) public {
         uint balance = stakingBalance[recipient];
         if (balance > 0){
-            dappToken.transfer(recipient, balance);
+            daiToken.transfer(recipient, balance);
         }
     }
 
