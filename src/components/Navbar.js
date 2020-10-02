@@ -1,5 +1,6 @@
 import React, { Component } from 'react'
 
+
 class Navbar extends Component {
 
   render() {
@@ -7,11 +8,11 @@ class Navbar extends Component {
       <nav className="navbar navbar-dark fixed-top bg-dark flex-md-nowrap p-0 shadow">
         <a
           className="navbar-brand col-sm-3 col-md-2 mr-0"
-          href=""
+          href="https://github.com/RohitCPPmobiloitte/DeFi_Exchange"
           target="_blank"
           rel="noopener noreferrer"
         >
-          &nbsp; wBTC - DAI DeFi Portal
+          &nbsp; wBTC - DAI DeFi Exchange
         </a>
 
         <ul className="navbar-nav px-3">
